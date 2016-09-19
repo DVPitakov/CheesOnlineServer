@@ -7,7 +7,7 @@ function Game() {
   this.users = [null,null];
 }
 
-var webSocketServer = new WebSocketServer.Server({port: 8081});
+var webSocketServer = new WebSocketServer.Server({port: process.env.PORT || 8081});
 webSocketServer.on('connection', function(ws) {
   var stepMessage = {
 	action: "step",
