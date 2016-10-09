@@ -28,6 +28,10 @@ webSocketServer.on('connection', function(ws) {
 	couse: 0,
 	data: 0
   };
+  var howAreYouMessage = {
+        action: "howAreYou",
+	health: "fine"
+  };
   var color = 0;
   var gameId = lastId;
   if (games[gameId].users[0]) {
@@ -71,6 +75,9 @@ webSocketServer.on('connection', function(ws) {
 		gameEndMessage.couse = msg.couse;
 		gameEndMessage.data = msg.data;
 		games[gameId].users[1 - color].send(JSON.stringify(gameEndMessage));
+	 }
+	 else if(msg.action.toString() == "howAreYou") {
+		games[gameId].users[color].send(JSON.stringify(howAreYouMessage));
 	 }
     }
   });
