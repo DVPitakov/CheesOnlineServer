@@ -3,52 +3,53 @@ var games = [];
 games[0] = new Game();
 var lastId = 0;
 
-
- function stepMessage(data) {
+function stepMessage(data) {
  	return {
 		action: "step",
 		oldPos: data.oldPos || 0,
  		newPos: data.newPos || 0
 	}
-  }
-  function colorMessage(data) {
+}
+
+function colorMessage(data) {
 	return {
         	action: "color",
         	userColor: data.userColor || 0
 	}
-  }
-  function pawTransMessage(data) {
+}
+
+function pawTransMessage(data) {
 	return {
 		action: "pawTrans",
         	figure: data.figure || 0,
         	pos: data.pos || 0
 	}
-  }
-  function gameEndMessage(data) {
+}
+
+function gameEndMessage(data) {
 	return {
         	action: "gameEnd",
 		couse: data.couse || 0,
 		data: data.data || 0
 	}
-  }
-  function howAreYouMessage(data) {
+}
+  
+function howAreYouMessage(data) {
 	return {
         	action: "howAreYou",
 		health: data.health || "fine"
 	}
-  }
+}
 
 function Game() {
   this.users = [null, null];
 }
 
 setInterval(function() {
-	console.log("hey hey hey i am here ororor");
 	games.forEach(function(el){
-		console.log("hey hey hey i am here");
-		if (null != el.users[0] && null != el.users[0].isAlive && null != el.users[1] && null != el.users[1].isAlive) {
+		if (null != el.users && null != el.users[0] && null != el.users[0].isAlive && null != el.users[1] && null != el.users[1].isAlive) {
 			for(var i = 0; i < 2; i++) {
-				if (null != el.users[i] && el.users[i].isAlive) {
+				if (null != el.users && null != el.users[i] && el.users[i].isAlive) {
 					el.users[i].isAlive = false;
 				}
 				else {
@@ -70,6 +71,7 @@ setInterval(function() {
 		}
 	})
 }, 10000);
+
 var webSocketServer = new WebSocketServer.Server({port: process.env.PORT || 8081});
 webSocketServer.on('connection', function(ws) {
   var color = 0;
@@ -125,8 +127,16 @@ webSocketServer.on('connection', function(ws) {
 		games[gameId] = [null,null];
 	 }
 	 else if(msg.action.toString() == "howAreYou") {
-		console.log("how are you message was get");
 		games[gameId].users[color].send(JSON.stringify(howAreYouMessage(msg)));
+	 }
+	 else if(msg.action.toString() == "nichia") {
+		games[gameId].users[1 - color].send(JSON.stringify({action: "nichia"}));
+	 }
+	else if(msg.action.toString() == "sayYes") {
+		games[gameId].users[1 - color].send(JSON.stringify({action: "sayYes"}));
+	 }
+	else if(msg.action.toString() == "sayNot") {
+		games[gameId].users[1 - color].send(JSON.stringify({action: "sayNot"}));
 	 }
     }
  }
