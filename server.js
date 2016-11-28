@@ -2,7 +2,6 @@ var WebSocketServer = new require('ws');
 var games = [];
 games[0] = new Game();
 var lastId = 0;
-
 function stepMessage(data) {
  	return {
 		action: "step",
