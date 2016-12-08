@@ -3,32 +3,34 @@ var Game = require('./game.js').Game;
 var Disconnector = require('./disconnector.js').Disconnector;
 var games = [];
 var lastId = 0;
-games[0] = new Game();
-
-
 var webSocketServer = new WebSocketServer.Server({port: process.env.PORT || 8081});
-var disconnector = new Disconnector(games);
+var disconnector = new Disconnector(games, 10000);
 webSocketServer.on('connection', function(ws) {
+	console.log(JSON.stringify(ws.upgradeReq.connection.remotePort));
+  console.log('here');
   var color = 0;
   var gameId = lastId;
-  var whiteUser = null
-  if (whiteUser) {
-	game = new Game(whiteUser,ws);
-	lastId += 1;
-	games[lastId] = game;
+  var game = games[gameId];
+  if (games[gameId] != null) {
+	game.addUser(ws);
+	game.run();
 	color = 1;
+	lastId += 1;
   }
   else {
-	whiteUser = ws;
+	game = new Game();
+	games[gameId] = game;
+	game.addUser(ws);
+	console.log('begin');
 	color = 0;
   }  
 
   ws.on('message', function(userMsg) {
 	var msg = JSON.parse(userMsg);
-	games[gameId].users[color].isAlive = true;
+	game.userActive[color]  = true;
     	if(null != msg && null != msg.action) {
     		if(msg.action.toString() == "step") {
-			game.newStep(msg, color);
+			game.nextStep(msg, color);
    	 	}
    	 	else if(msg.action.toString() == "pawTrans") {
 			game.pawTrans(msg, color);
@@ -37,10 +39,10 @@ webSocketServer.on('connection', function(ws) {
 			game.gameEnd(msg, color);
 	 	}
 	 	else if(msg.action.toString() == "howAreYou") {
-			game.howAreYou(color);
+			game.howAreYou(msg, color);
 	 	}
 	 	else if(msg.action.toString() == "nichia") {
-			game.nichia(color);
+			game.nichia(msg, color);
 	 	}
 		else if(msg.action.toString() == "sayYes") {
 			game.sayYes(color);

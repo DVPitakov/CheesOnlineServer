@@ -35,8 +35,8 @@ function howAreYouMessage(data) {
 		health: data.health || "fine"
 	}
 }
-extends.stepMessage = stepMessage;
-extends.colorMessage = colorMessage;
-extends.pawTransMessage = pawTransMessage;
-extends.gameEndMessage = gameEndMessage;
-extends.howAreYouMessage = howAreYouMessage;
+exports.stepMessage = stepMessage;
+exports.colorMessage = colorMessage;
+exports.pawTransMessage = pawTransMessage;
+exports.gameEndMessage = gameEndMessage;
+exports.howAreYouMessage = howAreYouMessage;

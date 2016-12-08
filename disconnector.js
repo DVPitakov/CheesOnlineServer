@@ -19,11 +19,13 @@ class Disconnector {
 	}
 	_go() {
 		this.games.forEach(game=>{
-			if(game.isActive()) {
-				game.disconnect();
-			}
-			else {
-				
+			if(game.started()) {
+				if(game.isActive()) {
+					game.disactive();
+				}
+				else {
+					game.disconnect();
+				}
 			}
 		});
 		_loop().bind(this);
